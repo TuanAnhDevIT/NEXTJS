@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AppstoreOutlined,
   MailOutlined,
@@ -8,10 +8,16 @@ import {
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
 const items: MenuItem[] = [
+  {
+    label: <Link href={"/"}>Home Page</Link>,
+    key: "homepage",
+    icon: <MailOutlined />,
+  },
   {
     label: <Link href={"/users"}>Manage Users</Link>,
     key: "users",
@@ -25,7 +31,26 @@ const items: MenuItem[] = [
 ];
 
 const Header: React.FC = () => {
-  const [current, setCurrent] = useState("users");
+  const router = useRouter();
+  const pathname = usePathname();
+  const [current, setCurrent] = useState("");
+
+  useEffect(() => {
+    switch (pathname) {
+      case "/":
+        setCurrent("homepage");
+        break;
+      case "/users":
+        setCurrent("users");
+        break;
+      case "/blogs":
+        setCurrent("blogs");
+        break;
+      default:
+        setCurrent("homepage");
+        break;
+    }
+  }, [pathname]);
 
   const onClick: MenuProps["onClick"] = (e) => {
     console.log("click ", e);
